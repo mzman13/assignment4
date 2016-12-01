@@ -13,50 +13,56 @@
 
 function showSuggestions(str){
 	// var xhttp;
+	var suggestions = $('#suggestions');
+	var suggestion = "";
+	var values = [];
+	str = str.toLowerCase();
+	suggestions.empty();
 	if(str.length == 0){
-		document.getElementById("suggestions").innerHTML = "nothing";
+		suggestions.html("<b>NO SUGGESTIONS</b>");
 	}
-	// xhttp = new XMLHttpRequest();
-	// xhttp.onreadystatechange = function(){
-
-	// 	if(this.readyState == 4 && this.status == 200){
-	// 		var json = JSON.parse(xhttp.responseText);
-	// 		document.getElementById("txtHint").innerHTML = json.interests;
-	// 	}
-	// };
-
-	// xhttp.open("GET", "http://www.mattbowytz.com/simple_api.json?data="+str, true);
-	// xhttp.send();
-
-	$.ajax({
-		type: 'GET',
-		url: "http://www.mattbowytz.com/simple_api.json?data=all",
-		async: true,
-		dataType: 'json',
-		success: function(result){
-			var values = [];
-			var suggestion = "";
-			var suggestions = $('#suggestions');
-			$.each(result.data, function(key, value){
-				//console.log(key + ' is ' + value);
-				$.each(value, function(key, value){
-					//console.log(value);
-					if(value.startsWith(str)){
-						suggestion += values;
-						console.log(value);
-						suggestions.append(value);
-					}
-				})
+	else{
+		if(values.length != 0){
+			console.log("true!!!!!!!!!!!!");
+			$.each(values, function(key, value){
+				//console.log(value);
+				if(value.startsWith(str)){
+					suggestion += value;
+					
+					//console.log(suggestion);
+					//suggestions.append(value);
+					//suggestions.html(suggestion);
+				}
 			})
-
-			suggestions.empty();
-			
+			//console.log(suggestion);
+			suggestions.html(suggestion+"<br/>");
+			console.log(suggestion+"<br/>");
 		}
-	});
+		else{
+			$.ajax({
+				type: 'GET',
+				url: "http://www.mattbowytz.com/simple_api.json?data=all",
+				async: true,
+				dataType: 'json',
+				success: function(result){
+					$.each(result.data, function(key, value){	
+						$.each(value, function(key, value){
+							values.push(value);
+							value = value.toLowerCase();
+							if(value.startsWith(str)){
+								//suggestion += value;
+								suggestions.append("<a href=www.google.com/#q="+value+"</a><br/>");
+								console.log(value);
+								//suggestions.append(value);
+								//suggestions.html(suggestion);
+							}
+							
+						})
+					})
+				}
+			});
+		}
+	}
+	
 
 }
-
-(function() {
-  // Magic!
-  console.log('Keepin\'n it clean with an external script!');
-})();
